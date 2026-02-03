@@ -6,10 +6,47 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Spanning {
   public static void main(String[] args) {
-    System.out.println(new Graph(readList().keySet()));
+    HashMap<HashSet<Character>, HashSet<String>> words = readList();
+    Graph wordWeb = new Graph(words.keySet());
+    HashSet<HashSet<HashSet<Character>>> res = new HashSet<>();
+    System.out.println("Set Up.");
+    int a = 0;
+    for (HashSet<Character> word : words.keySet()) {
+      a++;
+      HashSet<HashSet<Character>> intersection = (HashSet<HashSet<Character>>) wordWeb.neighbors(word).clone();
+      System.out.println("\nStarting " + a + " / " + words.size() + "\n" + intersection.size() + " Secondary Words\n");
+      intersection.forEach(word2 -> {
+        HashSet<HashSet<Character>> intersection2 = intersection(wordWeb.neighbors(word), wordWeb.neighbors(word2));
+        intersection2.forEach(word3 -> {
+          HashSet<HashSet<Character>> intersection3 = intersection(wordWeb.neighbors(word3), intersection2);
+          intersection3.forEach(word4 -> {
+            HashSet<HashSet<Character>> intersection4 = intersection(wordWeb.neighbors(word4), intersection3);
+            intersection4.forEach(word5 -> {
+              HashSet<HashSet<Character>> solution = new HashSet<>();
+              System.out.println("\nSolution Found.");
+              solution.add(word);
+              System.out.println("Word 1: " + words.get(word));
+              solution.add(word2);
+              System.out.println("Word 2: " + words.get(word2));
+              solution.add(word3);
+              System.out.println("Word 3: " + words.get(word3));
+              solution.add(word4);
+              System.out.println("Word 4: " + words.get(word4));
+              solution.add(word5);
+              System.out.println("Word 5: " + words.get(word5));
+              res.add(solution);
+            });
+          });
+        });
+        wordWeb.removeEdge(word, word2);
+      });
+      wordWeb.removeWord(word);
+      System.out.println("Finished Word.");
+    }
   }
 
   public static HashMap<HashSet<Character>, HashSet<String>> readList() {
@@ -35,5 +72,61 @@ public class Spanning {
     }
   }
 
+  public static <T> boolean emptyIntersection(Set<T> s1, Set<T> s2) {
+    for (T t : s1) {
+      if (s2.contains(t)) return false;
+    }
+    return true;
+  }
 
+  public static boolean checkPairs(HashSet<HashSet<Character>> p1, HashSet<HashSet<Character>> p2, Graph g) {
+    for (HashSet<Character> w1 : p1) {
+      for (HashSet<Character> w2 : p2) {
+        if (!g.areNeighbors(w1, w2)) return false;
+      }
+    }
+    return true;
+  }
+
+  public static <T> HashSet<T> intersection(HashSet<T> s1, HashSet<T> s2) {
+    HashSet<T> intersection = (HashSet<T>) s1.clone();
+    intersection.retainAll(s2);
+    return intersection;
+
+  }
 }
+
+
+/*
+      for (HashSet<Character> word2 : intersection) {
+        HashSet<HashSet<Character>> intersection2 = intersection(wordWeb.neighbors(word), wordWeb.neighbors(word2));
+        if (!intersection2.isEmpty()) {
+          for (HashSet<Character> word3 : intersection2) {
+            HashSet<HashSet<Character>> intersection3 = intersection(wordWeb.neighbors(word3), intersection2);
+            if (!intersection3.isEmpty()) {
+              for (HashSet<Character> word4 : intersection3) {
+                HashSet<HashSet<Character>> intersection4 = intersection(wordWeb.neighbors(word4), intersection3);
+                if (!intersection4.isEmpty()) {
+                  System.out.println("\nSolution Found.");
+                  for (HashSet<Character> word5 : intersection4) {
+                    HashSet<HashSet<Character>> solution = new HashSet<>();
+                    solution.add(word);
+                    System.out.println("Word 1: " + words.get(word));
+                    solution.add(word2);
+                    System.out.println("Word 2: " + words.get(word2));
+                    solution.add(word3);
+                    System.out.println("Word 3: " + words.get(word3));
+                    solution.add(word4);
+                    System.out.println("Word 4: " + words.get(word4));
+                    solution.add(word5);
+                    System.out.println("Word 5: " + words.get(word5));
+                    res.add(solution);
+                  }
+                }
+              }
+            }
+          }
+        }
+        wordWeb.removeEdge(word, word2);
+      }
+      */

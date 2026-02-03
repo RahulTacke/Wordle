@@ -19,6 +19,25 @@ public class Graph {
           g.get(other).add(word);
         }
       });
+      g.put(word, otherSet);
     });
+  }
+
+  public HashSet<HashSet<Character>> neighbors(HashSet<Character> word) {
+    return g.get(word);
+  }
+
+  public boolean areNeighbors(HashSet<Character> word1, HashSet<Character> word2) {
+    return g.get(word1).contains(word2);
+  }
+
+  public void removeWord(HashSet<Character> word) {
+    g.get(word).forEach(neighbor -> g.get(neighbor).remove(word));
+    g.remove(word);
+  }
+
+  public void removeEdge(HashSet<Character> word1, HashSet<Character> word2) {
+    g.get(word1).remove(word2);
+    g.get(word2).remove(word1);
   }
 }
