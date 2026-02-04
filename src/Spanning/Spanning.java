@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +29,7 @@ public class Spanning {
             HashSet<HashSet<Character>> intersection4 = intersection(wordWeb.neighbors(word4), intersection3);
             intersection4.forEach(word5 -> {
               HashSet<HashSet<Character>> solution = new HashSet<>();
-              System.out.println("\nSolution Found.");
+              System.out.println("\nSolution Found!");
               solution.add(word);
               System.out.println("Word 1: " + words.get(word));
               solution.add(word2);
@@ -45,7 +47,20 @@ public class Spanning {
         wordWeb.removeEdge(word, word2);
       });
       wordWeb.removeWord(word);
-      System.out.println("Finished Word.");
+      System.out.println("Finished Word: " + words.get(word));
+    }
+    try{
+      PrintWriter writer = new PrintWriter("output.txt", StandardCharsets.UTF_8);
+      res.forEach(solution -> {
+        writer.println("\nSolution: ");
+        System.out.println("\nSolution: ");
+        solution.forEach(word -> {
+          writer.println(words.get(word));
+          System.out.println(words.get(word));
+        });
+      });
+    } catch (Exception e) {
+      return;
     }
   }
 
@@ -95,38 +110,3 @@ public class Spanning {
 
   }
 }
-
-
-/*
-      for (HashSet<Character> word2 : intersection) {
-        HashSet<HashSet<Character>> intersection2 = intersection(wordWeb.neighbors(word), wordWeb.neighbors(word2));
-        if (!intersection2.isEmpty()) {
-          for (HashSet<Character> word3 : intersection2) {
-            HashSet<HashSet<Character>> intersection3 = intersection(wordWeb.neighbors(word3), intersection2);
-            if (!intersection3.isEmpty()) {
-              for (HashSet<Character> word4 : intersection3) {
-                HashSet<HashSet<Character>> intersection4 = intersection(wordWeb.neighbors(word4), intersection3);
-                if (!intersection4.isEmpty()) {
-                  System.out.println("\nSolution Found.");
-                  for (HashSet<Character> word5 : intersection4) {
-                    HashSet<HashSet<Character>> solution = new HashSet<>();
-                    solution.add(word);
-                    System.out.println("Word 1: " + words.get(word));
-                    solution.add(word2);
-                    System.out.println("Word 2: " + words.get(word2));
-                    solution.add(word3);
-                    System.out.println("Word 3: " + words.get(word3));
-                    solution.add(word4);
-                    System.out.println("Word 4: " + words.get(word4));
-                    solution.add(word5);
-                    System.out.println("Word 5: " + words.get(word5));
-                    res.add(solution);
-                  }
-                }
-              }
-            }
-          }
-        }
-        wordWeb.removeEdge(word, word2);
-      }
-      */
