@@ -1,4 +1,4 @@
-package Spanning;
+package spanning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
